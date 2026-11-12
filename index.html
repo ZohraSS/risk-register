@@ -1,0 +1,467 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>ABC Bank Kontrol Laboratoriyası</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: an audit working file — case header, four numbered steps, each a ruled worksheet; same ledger look as the risk register lab */
+:root{
+  --paper:#F4F6F8; --sheet:#FFFFFF; --ink:#15233A; --ink-2:#4A5872; --ink-3:#6E7A90;
+  --rule:#DCE1E8; --rule-2:#C6CDD8; --accent:#1F5FA8; --accent-ink:#FFFFFF; --accent-soft:#E6EEF8;
+  --bad:#B42318; --bad-bg:#FBE4E1; --warn:#B54708; --warn-bg:#FCEBD7; --good:#1E7A45; --good-bg:#DDF1E4;
+  --p:#1F5FA8; --p-bg:#E6EEF8; --d:#8A5A00; --d-bg:#F8EDCC; --c:#6B3FA0; --c-bg:#EFE6F8;
+  --font:"IBM Plex Sans","Noto Sans",Arial,sans-serif; --mono:"IBM Plex Mono","Noto Sans Mono",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#0E1622; --sheet:#152131; --ink:#E7ECF3; --ink-2:#B3BECD; --ink-3:#8C99AB;
+  --rule:#26364B; --rule-2:#33465F; --accent:#6EA8EC; --accent-ink:#0E1622; --accent-soft:#1B2E47;
+  --bad:#FF9C8F; --bad-bg:#4A1D19; --warn:#FFB872; --warn-bg:#47290F; --good:#7FD6A1; --good-bg:#163A26;
+  --p:#8DBBF0; --p-bg:#1B2E47; --d:#E9CF6A; --d-bg:#3D3412; --c:#C9A8F0; --c-bg:#2E2142; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --paper:#0E1622; --sheet:#152131; --ink:#E7ECF3; --ink-2:#B3BECD; --ink-3:#8C99AB;
+  --rule:#26364B; --rule-2:#33465F; --accent:#6EA8EC; --accent-ink:#0E1622; --accent-soft:#1B2E47;
+  --bad:#FF9C8F; --bad-bg:#4A1D19; --warn:#FFB872; --warn-bg:#47290F; --good:#7FD6A1; --good-bg:#163A26;
+  --p:#8DBBF0; --p-bg:#1B2E47; --d:#E9CF6A; --d-bg:#3D3412; --c:#C9A8F0; --c-bg:#2E2142; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--paper);color:var(--ink);font-family:var(--font);font-size:15px;line-height:1.5}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px;display:flex;flex-direction:column;gap:24px}
+h1,h2,h3{margin:0;text-wrap:balance;line-height:1.2}
+h1{font-size:28px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:20px;font-weight:600}
+h3{font-size:16px;font-weight:600}
+p{margin:0}
+.eyebrow{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.muted{color:var(--ink-2)}
+.hint{font-size:13px;color:var(--ink-3)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+header.top{display:flex;flex-wrap:wrap;gap:20px;align-items:flex-end;justify-content:space-between}
+header.top .t{display:flex;flex-direction:column;gap:6px;min-width:0;max-width:680px}
+.group{display:flex;flex-direction:column;gap:6px;min-width:220px}
+label,.lbl{font-size:13px;font-weight:600;color:var(--ink-2)}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--sheet);border:1px solid var(--rule-2);border-radius:6px;padding:8px 10px;width:100%}
+textarea{resize:vertical;min-height:64px}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+button{font:inherit;font-weight:600;cursor:pointer;border-radius:6px;padding:8px 14px;border:1px solid var(--rule-2);background:var(--sheet);color:var(--ink)}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+button.ghost{border-color:transparent;background:transparent;color:var(--accent);padding:4px 8px}
+button.danger{color:var(--bad)}
+nav.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+nav.steps button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;text-align:left;padding:12px 14px;border-radius:8px;background:var(--sheet);border:1px solid var(--rule)}
+nav.steps .n{font-family:var(--mono);font-size:12px;color:var(--ink-3)}
+nav.steps .l{font-size:15px}
+nav.steps .c{font-size:12px;font-weight:500;color:var(--ink-3)}
+nav.steps button[aria-selected="true"]{border-color:var(--accent);box-shadow:inset 0 -3px 0 var(--accent)}
+nav.steps button[aria-selected="true"] .n{color:var(--accent)}
+@media (max-width:720px){nav.steps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.panel{display:flex;flex-direction:column;gap:20px}
+.intro{display:flex;flex-direction:column;gap:8px;max-width:780px}
+.sheet{background:var(--sheet);border:1px solid var(--rule);border-radius:10px;padding:20px;display:flex;flex-direction:column;gap:16px;min-width:0}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+.field{display:flex;flex-direction:column;gap:6px;min-width:0}
+.field.wide{grid-column:1/-1}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.list{display:flex;flex-direction:column;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--sheet)}
+.item{display:grid;grid-template-columns:44px minmax(0,1fr);gap:14px;padding:14px 16px;border-bottom:1px solid var(--rule)}
+.item:last-child{border-bottom:none}
+.item .num{font-family:var(--mono);font-weight:600;color:var(--ink-3);padding-top:2px}
+.item .body{display:flex;flex-direction:column;gap:10px;min-width:0}
+.sel3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+@media (max-width:680px){.sel3{grid-template-columns:1fr}}
+.fb{font-size:13px;padding:6px 10px;border-radius:6px}
+.fb.good{background:var(--good-bg);color:var(--good)}
+.fb.bad{background:var(--bad-bg);color:var(--bad)}
+.checks{display:flex;flex-direction:column;gap:6px;margin:0;padding:0;list-style:none}
+.checks li{font-size:13px;padding:6px 10px;border-radius:6px;background:var(--warn-bg);color:var(--warn)}
+.checks li.ok{background:var(--good-bg);color:var(--good)}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.pill.P{background:var(--p-bg);color:var(--p)} .pill.D{background:var(--d-bg);color:var(--d)} .pill.C{background:var(--c-bg);color:var(--c)}
+.pill.off{background:transparent;color:var(--ink-3);border:1px dashed var(--rule-2)}
+.pill.lvl{background:var(--bad-bg);color:var(--bad)}
+.pill.soft{background:var(--accent-soft);color:var(--accent)}
+.risk{display:flex;flex-direction:column;gap:12px}
+.risk-head{display:flex;flex-wrap:wrap;gap:10px;align-items:baseline;justify-content:space-between}
+.risk-head .id{font-family:var(--mono);font-weight:600}
+.cov{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+.table-wrap{overflow-x:auto;border:1px solid var(--rule);border-radius:8px;background:var(--sheet)}
+table{border-collapse:collapse;width:100%;min-width:860px;font-size:14px}
+th,td{text-align:left;vertical-align:top;padding:9px 12px;border-bottom:1px solid var(--rule)}
+th{font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3);background:var(--paper)}
+tr:last-child td{border-bottom:none}
+td.id{font-family:var(--mono);font-weight:600;white-space:nowrap}
+.empty{padding:22px;text-align:center;color:var(--ink-3)}
+.model{border-left:3px solid var(--accent);padding:10px 14px;background:var(--accent-soft);border-radius:0 8px 8px 0;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.model ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:6px}
+.scoreline{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.big{font-family:var(--mono);font-size:22px;font-weight:600}
+.exportbox textarea{font-family:var(--mono);font-size:12px;min-height:140px}
+.confirm{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:10px 14px;border-radius:8px;background:var(--bad-bg);color:var(--bad)}
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(20px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+.footer{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;border-top:1px solid var(--rule);padding-top:16px}
+.derived{font-size:13px;color:var(--ink-2);padding:8px 10px;border:1px dashed var(--rule-2);border-radius:6px}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div class="t">
+      <p class="eyebrow">Dərs 5 · Praktiki məşğələ · ABC Bank (uydurma)</p>
+      <h1>Kontrol laboratoriyası: risk → kontrol → sübut</h1>
+      <p class="muted">Keçən dərsin risk reyestrindən davam edirik. Kontrolları təsnif edin, hər riskə ISO/IEC 27002:2022 kontrolları seçin, sübutu qiymətləndirin və SoA çıxarışı hazırlayın. İş bu brauzerdə saxlanılır; sonda CSV kimi ixrac edin.</p>
+    </div>
+    <div class="group">
+      <label for="groupName">Qrupun adı</label>
+      <input id="groupName" placeholder="məs. Qrup 2 — Leyla, Elvin" autocomplete="off">
+    </div>
+  </header>
+
+  <nav class="steps" role="tablist" aria-label="Addımlar">
+    <button role="tab" id="tab-cls" aria-controls="p-cls" aria-selected="true"><span class="n">ADDIM 1</span><span class="l">Kontrolları təsnif et</span><span class="c" id="cnt-cls">10 kontrol</span></button>
+    <button role="tab" id="tab-map" aria-controls="p-map" aria-selected="false"><span class="n">ADDIM 2</span><span class="l">Risk → kontrol</span><span class="c" id="cnt-map">0 kontrol</span></button>
+    <button role="tab" id="tab-ev" aria-controls="p-ev" aria-selected="false"><span class="n">ADDIM 3</span><span class="l">Sübutu qiymətləndir</span><span class="c" id="cnt-ev">8 sübut</span></button>
+    <button role="tab" id="tab-soa" aria-controls="p-soa" aria-selected="false"><span class="n">ADDIM 4</span><span class="l">SoA və ixrac</span><span class="c" id="cnt-soa">0 sətir</span></button>
+  </nav>
+
+  <!-- STEP 1 -->
+  <section class="panel" id="p-cls" role="tabpanel" aria-labelledby="tab-cls">
+    <div class="intro">
+      <h2>Hər kontrolu üç ölçü üzrə təsnif edin</h2>
+      <p class="muted">ISO/IEC 27002:2022 mövzusu (Təşkilati, İnsan, Fiziki, Texnoloji), funksiyası (Preventive, Detective, Corrective) və xarakteri (İnzibati, Texniki, Fiziki). Kontrol nömrəsi yoxlamadan sonra görünür.</p>
+    </div>
+    <div class="list" id="clsList"></div>
+    <div class="row"><button class="primary" id="clsCheck">Cavabları yoxla</button><span class="hint" id="clsScore"></span></div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" id="p-map" role="tabpanel" aria-labelledby="tab-map" hidden>
+    <div class="intro">
+      <h2>Hər riskə kontrol seçin və sübutunu müəyyən edin</h2>
+      <p class="muted">Hər risk üçün ən azı bir preventive və bir detective və ya corrective kontrol qurun. Kontrol ifadəsi konkret olmalıdır: kim, nə vaxt, nə edir. Sübut kontrolun işlədiyini göstərməlidir.</p>
+    </div>
+    <form class="sheet" id="ctlForm" novalidate>
+      <div class="row" style="justify-content:space-between"><h3 id="ctlFormTitle">Kontrol əlavə et</h3></div>
+      <div class="grid">
+        <div class="field"><label for="f-risk">Risk</label><select id="f-risk"></select></div>
+        <div class="field"><label for="f-ctl">ISO/IEC 27002 kontrolu</label><select id="f-ctl"></select></div>
+        <div class="field"><label for="f-type">Funksiya</label><select id="f-type"><option value="P">Preventive (qabaqlayıcı)</option><option value="D">Detective (aşkarlayıcı)</option><option value="C">Corrective (düzəldici)</option></select></div>
+        <div class="field"><span class="lbl">Mövzu və xarakter</span><div class="derived" id="f-derived">—</div></div>
+        <div class="field wide"><label for="f-stmt">Kontrol ifadəsi</label><textarea id="f-stmt" placeholder="məs. İK işdən çıxma tarixini sistemə daxil edən kimi İT həmin iş günü ərzində əməkdaşın bütün hesablarını bağlayır."></textarea></div>
+        <div class="field"><label for="f-owner">Kontrol sahibi (rol)</label><input id="f-owner" placeholder="məs. İT əməliyyatları rəhbəri"></div>
+        <div class="field"><label for="f-freq">Tezlik</label><select id="f-freq"><option>Davamlı (avtomatik)</option><option>Hər əməliyyatda</option><option>Gündəlik</option><option>Həftəlik</option><option>Aylıq</option><option>Rüblük</option><option>İllik</option><option>Hadisə baş verdikdə</option></select></div>
+        <div class="field"><label for="f-test">Effektivlik testi</label><select id="f-test"><option value="Sorğu">Sorğu (inquiry)</option><option value="Müşahidə">Müşahidə (observation)</option><option value="Sənəd yoxlaması" selected>Sənəd və qeydlərin yoxlanması (inspection)</option><option value="Təkrar icra">Təkrar icra (re-performance)</option></select></div>
+        <div class="field wide"><label for="f-ev">Sübut</label><input id="f-ev" placeholder="məs. Rüblük İK siyahısı ilə AD hesablarının müqayisə hesabatı, sahibin təsdiqi ilə"></div>
+      </div>
+      <ul class="checks" id="ctlChecks"></ul>
+      <div class="row"><button class="primary" type="submit" id="ctlSubmit">Riskə əlavə et</button><button type="button" id="ctlCancel" hidden>Ləğv et</button></div>
+    </form>
+    <div id="riskCards" class="panel"></div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" id="p-ev" role="tabpanel" aria-labelledby="tab-ev" hidden>
+    <div class="intro">
+      <h2>Bu sübut auditoru razı salarmı?</h2>
+      <p class="muted">Hər kontrol üçün təqdim olunan sübutu qiymətləndirin. Yaxşı sübut uyğun, etibarlı, kifayət qədər və vaxtında olmalıdır.</p>
+    </div>
+    <div class="list" id="evList"></div>
+    <div class="row"><button class="primary" id="evCheck">Cavabları yoxla</button><span class="hint" id="evScore"></span></div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="panel" id="p-soa" role="tabpanel" aria-labelledby="tab-soa" hidden>
+    <div class="intro">
+      <h2>Statement of Applicability (SoA) çıxarışı</h2>
+      <p class="muted">2-ci addımda seçdiyiniz kontrollardan avtomatik qurulur. Hər kontrol üçün tətbiq statusunu seçin. Real SoA Annex A-nın bütün 93 kontrolunu əhatə edir; burada yalnız bu risklərə aid hissə var.</p>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Kontrol</th><th>Ad</th><th>Mövzu</th><th>Tətbiq olunur</th><th>Əsaslandırma</th><th>Funksiya</th><th>Status</th></tr></thead><tbody id="soaRows"></tbody></table></div>
+    <div class="sheet">
+      <h3>Qrupun nəticəsi</h3>
+      <div class="scoreline"><span class="muted">Təsnifat:</span><span class="big" id="sumCls">—</span><span class="muted">Sübut:</span><span class="big" id="sumEv">—</span><span class="muted">P + D/C ilə örtülən risklər:</span><span class="big" id="sumCov">—</span></div>
+    </div>
+    <div class="sheet exportbox">
+      <h3>İşi müəllimə göndərin</h3>
+      <p class="muted">Xəritələmə və SoA-nı CSV faylı kimi yükləyin (Excel açır) və ya mətni kopyalayıb LMS-ə yapışdırın.</p>
+      <div class="row">
+        <button class="primary" id="dlMap">Risk → kontrol → sübut · CSV</button>
+        <button class="primary" id="dlSoa">SoA · CSV</button>
+        <button id="copyAll">Hər ikisini kopyala</button>
+      </div>
+      <textarea id="exportText" readonly hidden aria-label="İxrac mətni"></textarea>
+    </div>
+    <div class="footer">
+      <span class="hint">R-001 üçün bir nümunə kontrol “Nümunə” nişanı ilə verilib; onu silə bilərsiniz.</span>
+      <div class="row" id="resetArea"><button class="danger" id="resetBtn">Hamısını sil</button></div>
+    </div>
+  </section>
+</div>
+<div class="toast" id="toast" hidden role="status"></div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY="abc-kontrol-lab-v1";
+  var THEMES={O:"Təşkilati",H:"İnsan",F:"Fiziki",T:"Texnoloji"};
+  var NATURE={O:"İnzibati",H:"İnzibati",F:"Fiziki",T:"Texniki"};
+  var TYPES={P:"Preventive",D:"Detective",C:"Corrective"};
+  var CAT=[
+    ["5.1","O","Informasiya təhlükəsizliyi siyasətləri"],["5.3","O","Vəzifələrin bölünməsi"],["5.7","O","Təhdid kəşfiyyatı (threat intelligence)"],
+    ["5.9","O","Aktivlərin inventarı"],["5.12","O","Məlumatın təsnifatı"],["5.15","O","Girişə nəzarət"],["5.16","O","İdentifikasiyanın idarə edilməsi"],
+    ["5.17","O","Autentifikasiya məlumatı"],["5.18","O","Giriş hüquqları"],["5.19","O","Təchizatçı münasibətlərində təhlükəsizlik"],
+    ["5.24","O","İnsidentlərin idarəsinin planlanması və hazırlığı"],["5.25","O","Hadisələrin qiymətləndirilməsi və qərar"],["5.26","O","İnsidentlərə cavab"],
+    ["5.29","O","Pozulma zamanı təhlükəsizlik"],["5.30","O","Biznes davamlılığı üçün İKT hazırlığı"],["5.34","O","Şəxsi məlumatların (PII) qorunması"],
+    ["6.1","H","Namizədlərin yoxlanılması (screening)"],["6.3","H","Təhlükəsizlik maarifləndirməsi və təlimi"],["6.4","H","İntizam prosesi"],
+    ["6.5","H","İşdən çıxma və ya vəzifə dəyişikliyindən sonra məsuliyyətlər"],["6.6","H","Məxfilik razılaşmaları (NDA)"],["6.8","H","Təhlükəsizlik hadisələri barədə məlumat vermə"],
+    ["7.1","F","Fiziki təhlükəsizlik perimetrləri"],["7.2","F","Fiziki giriş"],["7.4","F","Fiziki təhlükəsizlik monitorinqi"],["7.5","F","Fiziki və ətraf mühit təhdidlərindən qorunma"],
+    ["7.11","F","Dəstəkləyici kommunal xidmətlər"],["7.14","F","Avadanlığın təhlükəsiz utilizasiyası və ya təkrar istifadəsi"],
+    ["8.1","T","İstifadəçi son qurğuları"],["8.2","T","İmtiyazlı giriş hüquqları"],["8.3","T","Məlumata girişin məhdudlaşdırılması"],["8.5","T","Təhlükəsiz autentifikasiya"],
+    ["8.7","T","Zərərli proqramlardan qorunma"],["8.8","T","Texniki zəifliklərin idarə edilməsi"],["8.9","T","Konfiqurasiyanın idarə edilməsi"],["8.11","T","Məlumatın maskalanması"],
+    ["8.12","T","Məlumat sızmasının qarşısının alınması (DLP)"],["8.13","T","Məlumatın ehtiyat nüsxəsi (backup)"],["8.14","T","Emal vasitələrinin ehtiyatlılığı (redundancy)"],
+    ["8.15","T","Jurnallaşdırma (logging)"],["8.16","T","Monitorinq fəaliyyətləri"],["8.20","T","Şəbəkə təhlükəsizliyi"],["8.23","T","Veb filtrləmə"],
+    ["8.24","T","Kriptoqrafiyanın istifadəsi"],["8.26","T","Tətbiq təhlükəsizliyi tələbləri"],["8.28","T","Təhlükəsiz kodlaşdırma"],
+    ["8.29","T","İnkişaf və qəbulda təhlükəsizlik testi"],["8.32","T","Dəyişikliklərin idarə edilməsi"]
+  ].map(function(a){ return {id:a[0],th:a[1],t:a[2]}; });
+  function ctl(id){ for(var i=0;i<CAT.length;i++) if(CAT[i].id===id) return CAT[i]; return null; }
+
+  var RISKS=[
+    {id:"R-001",l:4,i:5,stmt:"Xarici kibercinayətkar köçürmədə əlavə təsdiqin olmamasından istifadə edərək fişinqlə əldə etdiyi məlumatla müştəri hesabına daxil olaraq saxta köçürmə edə bilər.",
+     model:[["8.5","P","Yeni alıcıya hər köçürmə push bildirişi ilə ikinci faktorla təsdiqlənir; qayda sistemdə məcburidir.","Autentifikasiya siyasətinin konfiqurasiyası və təsadüfi seçilmiş 25 köçürmənin logu"],
+            ["8.16","D","Fraud monitorinq sistemi şübhəli köçürmələri real vaxtda saxlayır, SOC hər xəbərdarlığa 15 dəqiqə ərzində baxır.","Xəbərdarlıq jurnalı və SOC tiketləri, cavab vaxtı ilə"],
+            ["5.26","C","Fişinq insidenti təsdiqlənəndə müştəri hesabı 30 dəqiqə ərzində bloklanır və köçürmənin geri çağırılması başlanır.","İnsident tiketləri və bloklama vaxtı qeydləri"]]},
+    {id:"R-002",l:3,i:5,stmt:"Ransomware yenilənməmiş ödəniş serveri PAY-01-dəki məlum zəiflikdən istifadə edərək ödəniş xidmətini dayandıra bilər.",
+     model:[["8.8","P","Kritik təhlükəsizlik yamaqları buraxılışdan sonra 14 gün ərzində bütün ödəniş serverlərinə quraşdırılır.","Zəiflik skanerinin aylıq yamaq uyğunluq hesabatları"],
+            ["8.7","D","Ödəniş serverlərində EDR şifrələmə davranışını aşkarlayır və SOC-a xəbərdarlıq göndərir.","EDR konsolundan əhatə hesabatı və test xəbərdarlığı"],
+            ["8.13","C","Ödəniş məlumatının gündəlik oflayn backup-ı alınır; ransomware zamanı ondan bərpa edilir.","Backup jurnalları və son bərpa testinin protokolu"]]},
+    {id:"R-003",l:3,i:4,stmt:"İşdən çıxmış əməkdaşın aktiv qalmış Active Directory hesabı ilə müştəri məlumatlarına icazəsiz giriş edilə bilər.",
+     model:[["6.5","P","İK işdən çıxma tarixini sistemə daxil edən kimi İT həmin iş günü ərzində bütün hesabları bağlayır.","İşdən çıxma tiketləri ilə hesabın bağlanma vaxtının müqayisəsi"],
+            ["5.18","D","Sistem sahibləri rüblük olaraq aktiv hesabları İK siyahısı ilə müqayisə edib təsdiqləyir.","İmzalanmış rüblük giriş hüquqları baxışı hesabatı"]]},
+    {id:"R-004",l:3,i:5,stmt:"Backup bərpası sınaqdan keçirilmədiyi üçün insident zamanı ödəniş məlumatları vaxtında bərpa olunmaya bilər.",
+     model:[["5.30","P","Ödəniş xidməti üçün RTO 4 saat, RPO 1 saat təsdiqlənib və bərpa planına salınıb.","Təsdiqlənmiş BIA və İKT davamlılıq planı"],
+            ["8.16","D","Hər backup işi monitorinq olunur; uğursuz iş barədə həmin gün xəbərdarlıq gəlir.","Backup monitorinq xəbərdarlıqları və bağlanmış tiketlər"],
+            ["8.13","C","Ödəniş məlumatının bərpası rüblük test mühitində sınaqdan keçirilir və nəticə sahib tərəfindən təsdiqlənir.","Rüblük bərpa testi protokolu, bərpa vaxtı ilə"]]},
+    {id:"R-005",l:4,i:4,stmt:"Məlumat sızmasına qarşı nəzarət olmadığından əməkdaş səhvən müştəri məlumatlarını kənar ünvana göndərə bilər.",
+     model:[["8.12","P","DLP sistemi müştəri məlumatı olan e-poçtların kənar ünvanlara göndərilməsini bloklayır.","DLP qaydalarının konfiqurasiyası və bloklanmış hadisələr jurnalı"],
+            ["6.3","P","Bütün əməkdaşlar illik məlumatın qorunması təlimi keçir.","2026-cı il təlim iştirakı hesabatı (LMS-dən)"],
+            ["8.16","D","DLP xəbərdarlıqlarına məlumat təhlükəsizliyi komandası hər iş günü baxır.","Xəbərdarlıqlara baxış jurnalı"]]}
+  ];
+
+  var CLS=[
+    {t:"Ödəniş təsdiqində əməliyyatı daxil edən və təsdiqləyən fərqli şəxslərdir.",id:"5.3",th:"O",ty:["P"],na:"İnzibati"},
+    {t:"Bütün serverlərin giriş və admin əməliyyatları mərkəzi SIEM-ə yazılır.",id:"8.15",th:"T",ty:["D"],na:"Texniki"},
+    {t:"Gündəlik backup alınır və sistem itkisindən sonra məlumat ondan bərpa olunur.",id:"8.13",th:"T",ty:["C"],na:"Texniki"},
+    {t:"Yeni əməkdaşlar işə başlamazdan əvvəl fişinq üzrə təlim keçir.",id:"6.3",th:"H",ty:["P"],na:"İnzibati"},
+    {t:"Data mərkəzinə giriş kart oxuyucu və mühafizəçi ilə idarə olunur.",id:"7.2",th:"F",ty:["P"],na:"Fiziki"},
+    {t:"İnsident aşkarlandıqda zərər görmüş sistem şəbəkədən təcrid edilir və bərpa planı işə düşür.",id:"5.26",th:"O",ty:["C"],na:"İnzibati"},
+    {t:"İnternet-bankçılığa giriş üçün ikifaktorlu autentifikasiya tələb olunur.",id:"8.5",th:"T",ty:["P"],na:"Texniki"},
+    {t:"Bina perimetri 7/24 videomüşahidə ilə izlənir və hadisələr qeydə alınır.",id:"7.4",th:"F",ty:["D","P"],na:"Fiziki"},
+    {t:"Şəbəkə trafiki anomaliyalar üçün izlənir və SOC xəbərdarlıqlara baxır.",id:"8.16",th:"T",ty:["D","C"],na:"Texniki"},
+    {t:"Əməkdaş işdən çıxanda bütün giriş hüquqları və avadanlıqları geri alınır.",id:"6.5",th:"H",ty:["P"],na:"İnzibati"}
+  ];
+
+  var EVK=["Güclü sübut","Etibarsız (mənbə, tarix və ya təsdiq yoxdur)","Yalnız dizaynı göstərir","Kifayət deyil (yalnız sorğu və ya kiçik nümunə)","Köhnədir (audit dövrünə aid deyil)"];
+  var EV=[
+    {c:"Giriş hüquqları rüblük nəzərdən keçirilir.",e:"Tarixi və təsdiqləyəni olmayan Excel cədvəlinin ekran görüntüsü.",k:1,why:"Kimin, nə vaxt baxdığı görünmür; cədvəl istənilən vaxt dəyişdirilə bilər."},
+    {c:"İnternet-bankçılıqda 2FA məcburidir.",e:"IdP-nin özünün yaratdığı, 01.11.2026 tarixli, bütün istifadəçiləri əhatə edən MFA siyasəti hesabatı.",k:0,why:"Sistemdən birbaşa, tarixli, tam əhatəli: uyğun, etibarlı və vaxtındadır."},
+    {c:"Backup bərpası rüblük sınaqdan keçirilir.",e:"Təsdiqlənmiş “Backup siyasəti v2” sənədi.",k:2,why:"Siyasət kontrolun necə qurulduğunu göstərir, amma testin həqiqətən aparıldığını sübut etmir."},
+    {c:"Backup bərpası rüblük sınaqdan keçirilir.",e:"2026-cı ilin III rübünə aid bərpa testi jurnalı, tiket nömrəsi və sistem sahibinin təsdiqi ilə.",k:0,why:"İcranın özünü, tarixini və məsul şəxsin təsdiqini göstərir."},
+    {c:"Kritik yamaqlar 14 gün ərzində quraşdırılır.",e:"İT menecerinin şifahi açıqlaması: “biz hər ay yamaq quraşdırırıq”.",k:3,why:"Sorğu başlanğıc nöqtəsidir, tək başına sübut deyil; üstəlik 14 gün yox, bir ay deyilir."},
+    {c:"Əməkdaşlar illik təhlükəsizlik təlimi keçir (audit dövrü 2026).",e:"2023-cü ilin təlim iştirak siyahısı.",k:4,why:"Audit dövrünə aid deyil; 2026-cı ildə təlimin keçirildiyini göstərmir."},
+    {c:"Kritik yamaqlar 14 gün ərzində quraşdırılır.",e:"Zəiflik skanerinin son 3 ay üzrə 25 server üçün yamaq uyğunluq hesabatları.",k:0,why:"Avtomatik mənbə, dövrü əhatə edir, nümunə kifayət qədərdir."},
+    {c:"Limiti aşan hər köçürmə ikinci şəxs tərəfindən təsdiqlənir (gündə təxminən 300 əməliyyat).",e:"Bir günə aid 2 əməliyyatın təsdiq ekranı.",k:3,why:"Gündəlik çox təkrarlanan kontrol üçün 2 nümunə kifayət etmir; adətən 25–60 nümunə götürülür."}
+  ];
+
+  var VAGUE=["lazım olduqda","mütəmadi","vaxtaşırı","müvafiq qaydada","zəruri hallarda","ehtiyac olduqda","bəzən"];
+
+  function fresh(){ return {group:"",cls:{},clsChecked:false,ev:{},evChecked:false,status:{},
+    controls:[{id:"K-001",example:true,risk:"R-001",ctl:"8.5",type:"P",stmt:"Yeni alıcıya hər köçürmə push bildirişi ilə ikinci faktorla təsdiqlənir; qayda sistemdə məcburidir.",owner:"Rəqəmsal bankçılıq rəhbəri",freq:"Hər əməliyyatda",test:"Təkrar icra",ev:"Autentifikasiya konfiqurasiyası və təsadüfi seçilmiş 25 köçürmənin logu"}], shown:{} }; }
+  var S;
+  try{ S=JSON.parse(localStorage.getItem(KEY)||"null"); }catch(e){ S=null; }
+  if(!S||!Array.isArray(S.controls)) S=fresh();
+  ["cls","ev","status","shown"].forEach(function(k){ if(!S[k]||typeof S[k]!=="object") S[k]={}; });
+  function save(){ try{ localStorage.setItem(KEY,JSON.stringify(S)); }catch(e){} }
+
+  var $=function(id){ return document.getElementById(id); };
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]; }); }
+  function toast(m){ var t=$("toast"); t.textContent=m; t.hidden=false; clearTimeout(toast._t); toast._t=setTimeout(function(){ t.hidden=true; },2400); }
+  function level(s){ return s>=20?"Kritik":s>=10?"Yüksək":s>=5?"Orta":"Aşağı"; }
+  function nextId(){ var m=0; S.controls.forEach(function(c){ var n=parseInt(String(c.id).split("-")[1],10); if(n>m) m=n; }); return "K-"+String(m+1).padStart(3,"0"); }
+
+  /* tabs */
+  var TABS=["cls","map","ev","soa"];
+  function show(n){ TABS.forEach(function(t){ var on=t===n; $("tab-"+t).setAttribute("aria-selected",on?"true":"false"); $("p-"+t).hidden=!on; }); if(n==="soa") renderSoa(); try{ localStorage.setItem(KEY+"-tab",n); }catch(e){} }
+  TABS.forEach(function(t){ $("tab-"+t).addEventListener("click",function(){ show(t); }); });
+  $("groupName").value=S.group||""; $("groupName").addEventListener("input",function(e){ S.group=e.target.value; save(); });
+
+  /* STEP 1 */
+  function opt(list,val,ph){ return '<option value="">'+ph+'</option>'+list.map(function(o){ return '<option value="'+esc(o[0])+'"'+(o[0]===val?' selected':'')+'>'+esc(o[1])+'</option>'; }).join(""); }
+  function clsResult(){ var right=0; CLS.forEach(function(q,i){ var a=S.cls[i]||{}; if(a.th===q.th && q.ty.indexOf(a.ty)>-1 && a.na===q.na) right++; }); return right; }
+  function renderCls(){
+    var box=$("clsList"); box.innerHTML="";
+    CLS.forEach(function(q,i){
+      var a=S.cls[i]||{};
+      var d=document.createElement("div"); d.className="item";
+      var h='<span class="num">'+String(i+1).padStart(2,"0")+'</span><div class="body"><p>'+esc(q.t)+'</p><div class="sel3">'+
+        '<select data-i="'+i+'" data-k="th" aria-label="Mövzu">'+opt([["O","Təşkilati"],["H","İnsan"],["F","Fiziki"],["T","Texnoloji"]],a.th,"Mövzu…")+'</select>'+
+        '<select data-i="'+i+'" data-k="ty" aria-label="Funksiya">'+opt([["P","Preventive"],["D","Detective"],["C","Corrective"]],a.ty,"Funksiya…")+'</select>'+
+        '<select data-i="'+i+'" data-k="na" aria-label="Xarakter">'+opt([["İnzibati","İnzibati"],["Texniki","Texniki"],["Fiziki","Fiziki"]],a.na,"Xarakter…")+'</select></div>';
+      if(S.clsChecked && a.th && a.ty && a.na){
+        var errs=[];
+        if(a.th!==q.th) errs.push("mövzu: "+THEMES[q.th]);
+        if(q.ty.indexOf(a.ty)<0) errs.push("funksiya: "+q.ty.map(function(t){return TYPES[t];}).join(" və ya "));
+        if(a.na!==q.na) errs.push("xarakter: "+q.na);
+        var label=q.id+" "+ctl(q.id).t;
+        h+= errs.length ? '<p class="fb bad">Yenidən baxın — '+esc(errs.join("; "))+'. ISO/IEC 27002: '+esc(label)+'.</p>'
+                        : '<p class="fb good">Düzdür. ISO/IEC 27002: '+esc(label)+(q.ty.length>1?' (standart bu kontrola bir neçə funksiya atributu verir)':'')+'.</p>';
+      }
+      d.innerHTML=h+'</div>'; box.appendChild(d);
+    });
+    box.querySelectorAll("select").forEach(function(s){ s.addEventListener("change",function(){ var i=s.dataset.i; S.cls[i]=S.cls[i]||{}; S.cls[i][s.dataset.k]=s.value; save(); renderCls(); }); });
+    var done=CLS.filter(function(q,i){ var a=S.cls[i]||{}; return a.th&&a.ty&&a.na; }).length;
+    $("clsScore").textContent=S.clsChecked ? clsResult()+" / "+CLS.length+" tam düz · "+done+" cavablandırılıb" : done+" / "+CLS.length+" cavablandırılıb";
+  }
+  $("clsCheck").addEventListener("click",function(){ S.clsChecked=true; save(); renderCls(); });
+
+  /* STEP 2 */
+  function fillSelects(){
+    $("f-risk").innerHTML=RISKS.map(function(r){ return '<option value="'+r.id+'">'+r.id+' · '+esc(r.stmt.slice(0,70))+'…</option>'; }).join("");
+    var h=""; ["O","H","F","T"].forEach(function(th){ h+='<optgroup label="'+THEMES[th]+' ('+({O:"5",H:"6",F:"7",T:"8"})[th]+')">'+CAT.filter(function(c){return c.th===th;}).map(function(c){ return '<option value="'+c.id+'">'+c.id+' '+esc(c.t)+'</option>'; }).join("")+'</optgroup>'; });
+    $("f-ctl").innerHTML=h;
+  }
+  function derived(){ var c=ctl($("f-ctl").value); $("f-derived").textContent=c ? "Mövzu: "+THEMES[c.th]+" · Xarakter: "+NATURE[c.th] : "—"; }
+  $("f-ctl").addEventListener("change",function(){ derived(); liveCtl(); });
+  function form(){ return {risk:$("f-risk").value,ctl:$("f-ctl").value,type:$("f-type").value,stmt:$("f-stmt").value.trim(),owner:$("f-owner").value.trim(),freq:$("f-freq").value,test:$("f-test").value,ev:$("f-ev").value.trim()}; }
+  function ctlChecks(x){
+    var bad=[],ok=[];
+    if(x.stmt.length<40) bad.push("Kontrol ifadəsi çox qısadır: kim, nə vaxt, nə edir yazın.");
+    var v=VAGUE.filter(function(w){ return x.stmt.toLowerCase().indexOf(w)>-1; });
+    if(v.length) bad.push("Qeyri-müəyyən ifadə: “"+v[0]+"”. Tezliyi və ya şərti konkret yazın.");
+    if(!x.owner) bad.push("Kontrol sahibini (rol) göstərin.");
+    if(!x.ev) bad.push("Sübutu yazın: kontrolun işlədiyini nə göstərəcək?");
+    else if(/siyasət|prosedur|qayda sənədi/i.test(x.ev) && !/jurnal|log|hesabat|tiket|qeyd|protokol|nümunə/i.test(x.ev)) bad.push("Siyasət sənədi yalnız dizaynı göstərir. İcranı göstərən qeyd, jurnal və ya hesabat əlavə edin.");
+    if(x.test==="Sorğu") bad.push("Sorğu tək başına effektivliyi sübut etmir. Sənəd yoxlaması və ya təkrar icra seçin.");
+    var dup=S.controls.some(function(c){ return c.risk===x.risk && c.ctl===x.ctl && c.type===x.type && c.id!==editing; });
+    if(dup) bad.push("Bu kontrol bu riskə eyni funksiya ilə artıq əlavə olunub.");
+    if(!bad.length) ok.push("Kontrol ifadəsi, sahib, sübut və test qaydasındadır.");
+    return {bad:bad,ok:ok};
+  }
+  function liveCtl(){ var x=form(); if(!x.stmt && !x.owner && !x.ev){ $("ctlChecks").innerHTML=""; return; } var r=ctlChecks(x); $("ctlChecks").innerHTML=r.bad.map(function(t){return "<li>"+esc(t)+"</li>";}).join("")+r.ok.map(function(t){return '<li class="ok">'+esc(t)+'</li>';}).join(""); }
+  ["f-stmt","f-owner","f-ev","f-test","f-type","f-risk"].forEach(function(id){ $(id).addEventListener("input",liveCtl); $(id).addEventListener("change",liveCtl); });
+  var editing=null;
+  function resetForm(keepRisk){ var r=$("f-risk").value; editing=null; $("ctlForm").reset(); if(keepRisk) $("f-risk").value=r; $("f-test").value="Sənəd yoxlaması"; $("ctlFormTitle").textContent="Kontrol əlavə et"; $("ctlSubmit").textContent="Riskə əlavə et"; $("ctlCancel").hidden=true; derived(); $("ctlChecks").innerHTML=""; }
+  $("ctlCancel").addEventListener("click",function(){ resetForm(true); });
+  $("ctlForm").addEventListener("submit",function(e){
+    e.preventDefault(); var x=form(), r=ctlChecks(x);
+    if(r.bad.length){ liveCtl(); toast("Əvvəlcə qeydləri düzəldin"); return; }
+    if(editing){ var i=S.controls.findIndex(function(c){return c.id===editing;}); x.id=editing; S.controls[i]=x; toast(editing+" yeniləndi"); }
+    else { x.id=nextId(); S.controls.push(x); toast(x.id+" "+x.risk+" riskinə əlavə olundu"); }
+    save(); resetForm(true); renderRisks(); counts();
+  });
+  function coverage(rid){ var t={P:0,D:0,C:0}; S.controls.forEach(function(c){ if(c.risk===rid) t[c.type]++; }); return t; }
+  function covered(rid){ var t=coverage(rid); return t.P>0 && (t.D+t.C)>0; }
+  function renderRisks(){
+    var box=$("riskCards"); box.innerHTML="";
+    RISKS.forEach(function(r){
+      var t=coverage(r.id), list=S.controls.filter(function(c){ return c.risk===r.id; });
+      var d=document.createElement("div"); d.className="sheet risk";
+      var warn = t.P===0 ? "Preventive kontrol yoxdur — risk baş verməmişdən əvvəl nə onu dayandırır?" : (t.D+t.C)===0 ? "Detective və ya corrective kontrol yoxdur — preventive işləməsə, bunu kim görəcək?" : "";
+      var h='<div class="risk-head"><div class="row"><span class="id">'+r.id+'</span><span class="pill lvl">L'+r.l+' × I'+r.i+' = '+(r.l*r.i)+' · '+level(r.l*r.i)+'</span></div>'+
+        '<div class="cov">'+["P","D","C"].map(function(k){ return '<span class="pill '+(t[k]?k:"off")+'">'+TYPES[k]+' · '+t[k]+'</span>'; }).join("")+'</div></div>'+
+        '<p>'+esc(r.stmt)+'</p>';
+      h+= warn ? '<p class="fb bad">'+esc(warn)+'</p>' : (list.length? '<p class="fb good">Risk həm qabaqlayıcı, həm də aşkarlayıcı və ya düzəldici kontrolla örtülüb.</p>':'');
+      if(list.length){
+        h+='<div class="table-wrap"><table><thead><tr><th>ID</th><th>Kontrol</th><th>Funksiya</th><th>Kontrol ifadəsi</th><th>Sahib · tezlik</th><th>Sübut · test</th><th></th></tr></thead><tbody>'+
+          list.map(function(c){ var k=ctl(c.ctl)||{t:""}; return '<tr><td class="id">'+esc(c.id)+(c.example?'<br><span class="pill off">Nümunə</span>':'')+'</td><td><span class="mono">'+esc(c.ctl)+'</span> '+esc(k.t)+'</td><td><span class="pill '+c.type+'">'+TYPES[c.type]+'</span></td><td>'+esc(c.stmt)+'</td><td>'+esc(c.owner)+'<br><span class="hint">'+esc(c.freq)+'</span></td><td>'+esc(c.ev)+'<br><span class="hint">Test: '+esc(c.test)+'</span></td><td><div class="row"><button class="ghost" data-edit="'+esc(c.id)+'">Redaktə</button><button class="ghost danger" data-del="'+esc(c.id)+'">Sil</button></div></td></tr>'; }).join("")+
+          '</tbody></table></div>';
+      } else h+='<p class="empty">Hələ kontrol yoxdur. Yuxarıdakı formada “Risk” sahəsində '+r.id+' seçib başlayın.</p>';
+      var open=!!S.shown[r.id];
+      h+='<div class="row"><button class="ghost" data-model="'+r.id+'" aria-expanded="'+open+'">'+(open?"Nümunə həlli gizlət":"Nümunə həlli göstər")+'</button><button class="ghost" data-pick="'+r.id+'">Bu riskə kontrol əlavə et</button></div>';
+      if(open) h+='<div class="model"><b>Mümkün həll (yeganə düzgün cavab deyil)</b><ul>'+r.model.map(function(m){ var k=ctl(m[0]); return '<li><span class="mono">'+m[0]+'</span> '+esc(k.t)+' · <span class="pill '+m[1]+'">'+TYPES[m[1]]+'</span><br>'+esc(m[2])+'<br><span class="hint">Sübut: '+esc(m[3])+'</span></li>'; }).join("")+'</ul></div>';
+      d.innerHTML=h; box.appendChild(d);
+    });
+    box.querySelectorAll("[data-model]").forEach(function(b){ b.addEventListener("click",function(){ var id=b.dataset.model; S.shown[id]=!S.shown[id]; save(); renderRisks(); }); });
+    box.querySelectorAll("[data-pick]").forEach(function(b){ b.addEventListener("click",function(){ resetForm(false); $("f-risk").value=b.dataset.pick; $("ctlForm").scrollIntoView({block:"start"}); $("f-ctl").focus(); }); });
+    box.querySelectorAll("[data-del]").forEach(function(b){ b.addEventListener("click",function(){ var id=b.dataset.del; S.controls=S.controls.filter(function(c){return c.id!==id;}); save(); renderRisks(); counts(); toast(id+" silindi"); }); });
+    box.querySelectorAll("[data-edit]").forEach(function(b){ b.addEventListener("click",function(){
+      var c=S.controls.filter(function(x){return x.id===b.dataset.edit;})[0]; editing=c.id;
+      $("f-risk").value=c.risk; $("f-ctl").value=c.ctl; $("f-type").value=c.type; $("f-stmt").value=c.stmt; $("f-owner").value=c.owner; $("f-freq").value=c.freq; $("f-test").value=c.test; $("f-ev").value=c.ev;
+      derived(); $("ctlFormTitle").textContent=c.id+" redaktə olunur"; $("ctlSubmit").textContent="Yadda saxla"; $("ctlCancel").hidden=false; liveCtl(); $("ctlForm").scrollIntoView({block:"start"});
+    }); });
+  }
+
+  /* STEP 3 */
+  function evRight(){ var n=0; EV.forEach(function(q,i){ if(String(S.ev[i])===String(q.k)) n++; }); return n; }
+  function renderEv(){
+    var box=$("evList"); box.innerHTML="";
+    EV.forEach(function(q,i){
+      var a=S.ev[i]; var d=document.createElement("div"); d.className="item";
+      var h='<span class="num">'+String(i+1).padStart(2,"0")+'</span><div class="body"><p><span class="lbl">Kontrol:</span> '+esc(q.c)+'</p><p><span class="lbl">Sübut:</span> '+esc(q.e)+'</p>'+
+        '<select data-i="'+i+'" aria-label="Sübutun qiymətləndirilməsi"><option value="">Qiymət seçin…</option>'+EVK.map(function(k,j){ return '<option value="'+j+'"'+(String(a)===String(j)?' selected':'')+'>'+esc(k)+'</option>'; }).join("")+'</select>';
+      if(S.evChecked && a!==undefined && a!==""){
+        var ok=String(a)===String(q.k);
+        h+='<p class="fb '+(ok?"good":"bad")+'">'+(ok?"Düzdür. ":"Düzgün cavab: "+esc(EVK[q.k])+". ")+esc(q.why)+'</p>';
+      }
+      d.innerHTML=h+'</div>'; box.appendChild(d);
+    });
+    box.querySelectorAll("select").forEach(function(s){ s.addEventListener("change",function(){ S.ev[s.dataset.i]=s.value; save(); renderEv(); }); });
+    var done=EV.filter(function(q,i){ return S.ev[i]!==undefined && S.ev[i]!==""; }).length;
+    $("evScore").textContent=S.evChecked ? evRight()+" / "+EV.length+" düz · "+done+" cavablandırılıb" : done+" / "+EV.length+" cavablandırılıb";
+  }
+  $("evCheck").addEventListener("click",function(){ S.evChecked=true; save(); renderEv(); });
+
+  /* STEP 4 */
+  function soaRows(){
+    var by={};
+    S.controls.forEach(function(c){ var r=by[c.ctl]||(by[c.ctl]={ctl:c.ctl,risks:[],types:[]}); if(r.risks.indexOf(c.risk)<0) r.risks.push(c.risk); if(r.types.indexOf(c.type)<0) r.types.push(c.type); });
+    return Object.keys(by).sort(function(a,b){ var x=a.split(".").map(Number), y=b.split(".").map(Number); return x[0]-y[0]||x[1]-y[1]; }).map(function(k){ return by[k]; });
+  }
+  function renderSoa(){
+    var rows=soaRows(), tb=$("soaRows");
+    if(!rows.length) tb.innerHTML='<tr><td colspan="7" class="empty">2-ci addımda kontrol əlavə etdikdə SoA burada avtomatik görünəcək.</td></tr>';
+    else tb.innerHTML=rows.map(function(r){ var k=ctl(r.ctl); var st=S.status[r.ctl]||"Planlaşdırılıb";
+      return '<tr><td class="id">'+esc(r.ctl)+'</td><td>'+esc(k.t)+'</td><td>'+THEMES[k.th]+'</td><td>Bəli</td><td>Risk '+esc(r.risks.join(", "))+'</td><td>'+r.types.map(function(t){return '<span class="pill '+t+'">'+TYPES[t]+'</span>';}).join(" ")+'</td>'+
+        '<td><select data-st="'+esc(r.ctl)+'" aria-label="'+esc(r.ctl)+' statusu">'+["Planlaşdırılıb","Qismən tətbiq olunub","Tətbiq olunub"].map(function(s){ return '<option'+(s===st?' selected':'')+'>'+s+'</option>'; }).join("")+'</select></td></tr>'; }).join("");
+    tb.querySelectorAll("[data-st]").forEach(function(s){ s.addEventListener("change",function(){ S.status[s.dataset.st]=s.value; save(); }); });
+    $("sumCls").textContent=S.clsChecked? clsResult()+"/"+CLS.length : "yoxlanmayıb";
+    $("sumEv").textContent=S.evChecked? evRight()+"/"+EV.length : "yoxlanmayıb";
+    $("sumCov").textContent=RISKS.filter(function(r){ return covered(r.id); }).length+"/"+RISKS.length;
+  }
+  function csv(rows){ return "﻿"+rows.map(function(r){ return r.map(function(v){ v=String(v==null?"":v); return /[",;\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v; }).join(","); }).join("\n"); }
+  function mapCsv(){ return csv([["Qrup","Kontrol ID","Risk","Risk ifadəsi","ISO 27002","Kontrolun adı","Mövzu","Xarakter","Funksiya","Kontrol ifadəsi","Sahib","Tezlik","Sübut","Test"]].concat(S.controls.map(function(c){ var k=ctl(c.ctl)||{t:"",th:"O"}; var r=RISKS.filter(function(x){return x.id===c.risk;})[0]||{stmt:""}; return [S.group,c.id,c.risk,r.stmt,c.ctl,k.t,THEMES[k.th],NATURE[k.th],TYPES[c.type],c.stmt,c.owner,c.freq,c.ev,c.test]; }))); }
+  function soaCsv(){ return csv([["Qrup","Kontrol","Ad","Mövzu","Tətbiq olunur","Əsaslandırma","Funksiya","Status"]].concat(soaRows().map(function(r){ var k=ctl(r.ctl); return [S.group,r.ctl,k.t,THEMES[k.th],"Bəli","Risk "+r.risks.join(" "),r.types.map(function(t){return TYPES[t];}).join(" "),S.status[r.ctl]||"Planlaşdırılıb"]; })).concat([[],["Qrup","Təsnifat",S.clsChecked?clsResult()+"/"+CLS.length:"",  "Sübut",S.evChecked?evRight()+"/"+EV.length:"","Örtülən risklər",RISKS.filter(function(r){return covered(r.id);}).length+"/"+RISKS.length]])); }
+  function fileBase(){ return (S.group||"qrup").replace(/[^\wəöüğıçşƏÖÜĞIÇŞ -]/g,"").trim().replace(/\s+/g,"-")||"qrup"; }
+  var dlP=null;
+  function getDl(){ if(!dlP){ dlP=(window.claude&&window.claude.use)?Promise.resolve(window.claude.use("downloads")).catch(function(){return null;}):Promise.resolve(null); } return dlP; }
+  setTimeout(getDl,0);
+  function showText(t){ var ta=$("exportText"); ta.value=t; ta.hidden=false; ta.focus(); ta.select(); }
+  async function offer(name,text){
+    var dl=null; try{ dl=await getDl(); }catch(e){}
+    if(!dl){
+      if(window.claude){ showText(text.replace(/^﻿/,"")); toast("Yükləmə burada mümkün deyil — mətni kopyalayın"); return; }
+      try{ var a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([text],{type:"text/csv;charset=utf-8"})); a.download=name; document.body.appendChild(a); a.click(); setTimeout(function(){ URL.revokeObjectURL(a.href); a.remove(); },1000); toast("Fayl yükləndi"); }
+      catch(e){ showText(text.replace(/^﻿/,"")); toast("Yükləmə alınmadı — mətni kopyalayın"); }
+      return;
+    }
+    try{ await dl.save({filename:name,data:text}); toast("Fayl hazırdır"); }
+    catch(e){ if(e&&e.code==="declined") return; showText(text.replace(/^﻿/,"")); toast("Yükləmə alınmadı — mətni kopyalayın"); }
+  }
+  $("dlMap").addEventListener("click",function(){ offer(fileBase()+"-risk-kontrol-subut.csv",mapCsv()); });
+  $("dlSoa").addEventListener("click",function(){ offer(fileBase()+"-soa.csv",soaCsv()); });
+  $("copyAll").addEventListener("click",function(){
+    var t="RİSK → KONTROL → SÜBUT\n"+mapCsv().replace(/^﻿/,"")+"\n\nSoA\n"+soaCsv().replace(/^﻿/,"");
+    if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ toast("Kopyalandı"); },function(){ showText(t); toast("Mətni seçib kopyalayın"); }); }
+    else { showText(t); toast("Mətni seçib kopyalayın"); }
+  });
+  function bindReset(){ $("resetBtn").addEventListener("click",function(){
+    $("resetArea").innerHTML='<div class="confirm">Bütün cavablar və kontrollar silinsin? <button class="danger" id="resetYes">Bəli, sil</button><button id="resetNo">Xeyr</button></div>';
+    $("resetYes").addEventListener("click",function(){ var g=S.group; S=fresh(); S.group=g; S.controls=[]; save(); restore(); renderAll(); toast("Hər şey təmizləndi"); });
+    $("resetNo").addEventListener("click",restore);
+  }); }
+  function restore(){ $("resetArea").innerHTML='<button class="danger" id="resetBtn">Hamısını sil</button>'; bindReset(); }
+  bindReset();
+
+  function counts(){ $("cnt-map").textContent=S.controls.length+" kontrol"; $("cnt-soa").textContent=soaRows().length+" sətir"; }
+  function renderAll(){ renderCls(); renderRisks(); renderEv(); renderSoa(); counts(); }
+  fillSelects(); derived(); renderAll();
+  var st="cls"; try{ st=localStorage.getItem(KEY+"-tab")||"cls"; }catch(e){}
+  if(TABS.indexOf(st)<0) st="cls"; show(st);
+})();
+</script>
+
+</body></html>
